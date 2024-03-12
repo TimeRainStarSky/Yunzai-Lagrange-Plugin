@@ -1,0 +1,37 @@
+{
+    "name": "lagrangejs",
+    "version": "0.0.1",
+    "description": "nodejs implementation for Lagrange.Core (只是为了过过瘾), derived from oicq",
+    "author": "Linwenxuan05",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "scripts": {
+        "dev": "ts-node-dev --ignore-watch data -r tsconfig-paths/register src/test.ts",
+        "build": "tsc && tsc-alias && cp -r src/core/protobuf/*.min.* lib/core/protobuf",
+        "lint": "eslint src --ext .ts",
+        "lint:fix": "eslint src --ext .ts --fix",
+        "format": "prettier src --write",
+        "test": "tsc"
+    },
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org"
+    },
+    "engines": {
+        "node": ">=16",
+        "pnpm": ">=7"
+    },
+    "dependencies": {
+        "axios": "^1.6.7",
+        "log4js": "^6.9.1",
+        "long": "^5.2.3",
+        "pngjs": "^7.0.0",
+        "probe-image-size": "^7.2.3",
+        "silk-wasm": "3.2.3"
+    },
+    "files": [
+        "/src/**/*.js",
+        "/src/**/*.d.ts",
+        "/src/**/LICENSE"
+    ]
+}
