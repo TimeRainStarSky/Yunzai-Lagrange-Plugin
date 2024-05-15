@@ -1,7 +1,7 @@
 logger.info(logger.yellow("- 正在加载 Lagrange 适配器插件"))
 
 import makeConfig from "../../lib/plugins/config.js"
-import { randomUUID } from "node:crypto"
+import { ulid } from "ulid"
 
 import url from "url"
 import path from "path"
@@ -48,7 +48,7 @@ const adapter = new class LagrangeAdapter {
     const image = new Bot[id].lagrangejs.Image({ file })
     image.upload = await pick.uploadImages([image])
     if (image.upload[0].status == "fulfilled")
-      image.url = `https://${image.commonElems[1][2][3]}${image.commonElems[2][1][pick.dm?11:12][30]}`
+      image.url = `http://${String(image.commonElems[1][2][3]).replace("qq.com.cn", "qq.com")}${String(image.commonElems[2][1][pick.dm?11:12][30]).replace(/_/g, "%5F")}`
     return image
   }
 
@@ -69,7 +69,7 @@ const adapter = new class LagrangeAdapter {
 
   makeButton(id, pick, button, style, forward) {
     const msg = {
-      id: randomUUID(),
+      id: ulid(),
       render_data: {
         label: button.text,
         visited_label: button.clicked_text,
@@ -565,7 +565,7 @@ const adapter = new class LagrangeAdapter {
     bot.on("notice", data => Bot.em(`${data.post_type}.${data.notice_type}.${data.sub_type}`, this.makeEvent(data)))
     bot.on("request", data => Bot.em(`${data.post_type}.${data.request_type}.${data.sub_type}`, this.makeEvent(data)))
 
-    logger.mark(`${logger.blue(`[${id}]`)} ${this.name}(${this.id}) ${this.version} 已连接`)
+    Bot.makeLog("mark", `${this.name}(${this.id}) ${this.version} 已连接`, id)
     Bot.em(`connect.${id}`, { self_id: id })
     return true
   }
