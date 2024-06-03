@@ -47,7 +47,7 @@ const adapter = new class LagrangeAdapter {
   async uploadImage(id, file, pick = Bot[id].pickFriend(id)) {
     const image = new Bot[id].lagrangejs.Image({ file })
     image.upload = await pick.uploadImages([image])
-    if (image.upload[0].status == "fulfilled")
+    if (image.upload[0].status === "fulfilled")
       image.url = `http://${String(image.commonElems[1][2][3]).replace("qq.com.cn", "qq.com")}${String(image.commonElems[2][1][pick.dm?11:12][30]).replace(/_/g, "%5F")}`
     return image
   }
@@ -105,7 +105,7 @@ const adapter = new class LagrangeAdapter {
 
     if (forward && config.markdown.callback && (button.input || button.callback))
       for (const i of Bot.uin)
-        if (Bot[i].adapter?.id == "QQBot" && Bot[i].sdk?.config?.appid && Bot[i].callback) {
+        if (Bot[i].adapter?.id === "QQBot" && Bot[i].sdk?.config?.appid && Bot[i].callback) {
           msg.action.type = 1
           delete msg.action.data
           this.markdown_appid = Number(Bot[i].sdk.config.appid)
@@ -120,7 +120,7 @@ const adapter = new class LagrangeAdapter {
         }
 
     if (button.permission) {
-      if (button.permission == "admin") {
+      if (button.permission === "admin") {
         msg.action.permission.type = 1
       } else {
         msg.action.permission.type = 0
@@ -154,7 +154,7 @@ const adapter = new class LagrangeAdapter {
     const forward = []
 
     for (let i of Array.isArray(msg) ? msg : [msg]) {
-      if (typeof i == "object")
+      if (typeof i === "object")
         i = { ...i }
       else
         i = { type: "text", text: i }
@@ -172,7 +172,7 @@ const adapter = new class LagrangeAdapter {
           content += this.makeMarkdownText(`文件：${i.file}`)
           break
         case "at":
-          if (i.qq == "all") {
+          if (i.qq === "all") {
             content += "[@全体成员](mqqapi://markdown/mention?at_type=everyone)"
           } else {
             if (!i.name) {
@@ -217,7 +217,7 @@ const adapter = new class LagrangeAdapter {
       messages.unshift([{ type: "markdown", content }])
     if (button.length) {
       for (const i of messages) {
-        if (i[0].type == "markdown")
+        if (i[0].type === "markdown")
           i.push({ type: "keyboard",
             appid: this.markdown_appid,
             rows: button.splice(0,5),
@@ -246,7 +246,7 @@ const adapter = new class LagrangeAdapter {
     let reply
 
     for (let i of Array.isArray(msg) ? msg : [msg]) {
-      if (typeof i == "object") switch (i.type) {
+      if (typeof i === "object") switch (i.type) {
         case "text":
         case "image":
         case "face":
@@ -258,7 +258,7 @@ const adapter = new class LagrangeAdapter {
           reply = i
           continue
         case "at":
-          if (i.qq != "all" && !i.name) {
+          if (i.qq !== "all" && !i.name) {
             let info
             if (pick.pickMember)
               info = pick.pickMember(i.qq).info
@@ -275,7 +275,7 @@ const adapter = new class LagrangeAdapter {
           continue
         case "button":
           if (config.markdown.button) {
-            if (config.markdown.button == "direct" || config.markdown.mode == "mix")
+            if (config.markdown.button === "direct" || config.markdown.mode === "mix")
               message.push({
                 type: "keyboard",
                 appid: this.markdown_appid,
@@ -332,7 +332,7 @@ const adapter = new class LagrangeAdapter {
     }}
 
     if (config.markdown.mode) {
-      if (config.markdown.mode == "mix")
+      if (config.markdown.mode === "mix")
         msgs = [
           ...await this.makeMsg(id, pick, msg),
           await this.makeMarkdownMsg(id, pick, msg),
@@ -349,7 +349,7 @@ const adapter = new class LagrangeAdapter {
       await sendMsg()
     }
 
-    if (rets.data.length == 1)
+    if (rets.data.length === 1)
       return rets.data[0]
     return rets
   }
@@ -389,6 +389,8 @@ const adapter = new class LagrangeAdapter {
             get: (target, prop, receiver) => this.getPick(id, pickMember, target, prop, receiver),
           })
         }
+      case "raw":
+        return pick
     }
     return target[prop] ?? pick[prop]
   }
@@ -418,7 +420,7 @@ const adapter = new class LagrangeAdapter {
       get: (target, prop, receiver) => target[prop] ?? raw[prop],
     })
     for (const i of ["friend", "group", "member"]) {
-      if (typeof data[i] != "object") continue
+      if (typeof data[i] !== "object") continue
       const pick = data[i]
       data[i] = new Proxy({}, {
         get: (target, prop, receiver) => this.getPick(data.self_id, pick, target, prop, receiver),
@@ -448,7 +450,7 @@ const adapter = new class LagrangeAdapter {
 
     let getTips = "发送 "
     let sendMsg
-    if (typeof get != "function") {
+    if (typeof get !== "function") {
       getTips += `#Bot验证${id}:`
       get = () => new Promise(resolve =>
         Bot.once(`verify.${id}`, data => {
@@ -487,7 +489,7 @@ const adapter = new class LagrangeAdapter {
       )
       const msg = await get()
       let fnc
-      if (msg == "网页") {
+      if (msg === "网页") {
         const url = `https://hlhs-nb.cn/captcha/slider?key=${id}`
         await fetch(url, {
           method: "POST",
@@ -572,10 +574,7 @@ const adapter = new class LagrangeAdapter {
 
   async load() {
     for (const token of config.token)
-      await new Promise(resolve => {
-        adapter.connect(token).then(resolve)
-        setTimeout(resolve, 5000)
-      })
+      await Bot.sleep(5000, this.connect(token))
   }
 }
 
@@ -614,7 +613,7 @@ export class LagrangeAdapter extends plugin {
   async Token() {
     const token = this.e.msg.replace(/^#[Ll](agr)?[Aa](nge)?设置/, "").trim()
     if (config.token.includes(token)) {
-      config.token = config.token.filter(item => item != token)
+      config.token = config.token.filter(item => item !== token)
       this.reply(`账号已删除，重启后生效，共${config.token.length}个账号`, true)
     } else {
       if (await adapter.connect(token, msg => this.reply(msg, true), () => Bot.getTextMsg(this.e))) {

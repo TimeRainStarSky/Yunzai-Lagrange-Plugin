@@ -52,10 +52,7 @@ async function getSign(cmd, seq, src) {
         src: src.toString('hex'),
     };
     const url = new URL(this.sig.signApiAddr).toString();
-    const config = {
-        params: params,
-    };
-    const data = await axios_1.default.get(url, config);
+    const data = await axios_1.default.post(url, params);
     return data.data['value'];
 }
 exports.getSign = getSign;
