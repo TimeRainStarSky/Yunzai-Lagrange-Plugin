@@ -1,0 +1,1 @@
+[lagrangejs](https://github.com/LagrangeDev/lagrangejs) 未更新，改用 [Lagrange.OneBot](https://github.com/LagrangeDev/Lagrange.Core)
